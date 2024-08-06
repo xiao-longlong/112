@@ -13,10 +13,15 @@ class Exp(MyExp):
         self.width = 0.50
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
 
+        """改了"""
         # Define yourself dataset path
-        self.data_dir = "datasets/coco128"
+        self.data_dir = "/workspace/dataset/coco/"
         self.train_ann = "instances_train2017.json"
         self.val_ann = "instances_val2017.json"
+        # self.data_dir = "datasets/coco128"
+        # self.train_ann = "instances_train2017.json"
+        # self.val_ann = "instances_val2017.json"
+        """改了"""
 
         self.num_classes = 71
 

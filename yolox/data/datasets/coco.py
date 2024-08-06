@@ -38,7 +38,8 @@ class COCODataset(CacheDataset):
 
     def __init__(
         self,
-        data_dir=None,
+        # data_dir=None, 
+        data_dir="/workspace/dataset/",  #改了
         json_file="instances_train2017.json",
         name="train2017",
         img_size=(416, 416),
@@ -55,8 +56,11 @@ class COCODataset(CacheDataset):
             img_size (int): target image size after pre-processing
             preproc: data augmentation strategy
         """
-        if data_dir is None:
-            data_dir = os.path.join(get_yolox_datadir(), "COCO")
+# 改了
+        # if data_dir is None:
+        #     data_dir = os.path.join(get_yolox_datadir(), "COCO")
+# 改了
+        data_dir = "/workspace/dataset/coco/" #改了
         self.data_dir = data_dir
         self.json_file = json_file
 
