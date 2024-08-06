@@ -1,0 +1,75 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+
+        {
+            "name": "Python 调试程序: 包含参数的当前文件",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": "${command:pickArgs}"
+        },
+        {
+            "name": "Python 调试程序: 当前文件",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "调试train文件",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/workspace/yolox/tools/train.py",
+            "console": "integratedTerminal",
+            "python": "/opt/anaconda3/bin/python",
+            "args": [
+                "image",
+                "-f",
+                "/workspace/yolox/exps/example/yolox_coco/yolox_coco_s.py",
+                "-n",
+                "yolox-s",
+                "-d",
+                "8",
+                "-b",
+                "64",
+                "--fp16",
+                "-o",
+                "-c",
+                "/workspace/checkpoints/yolox/yolox_s.pth",
+                "--cache",
+            ]
+        },
+        {
+            "name": "测试demo文件",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/workspace/yolox/tools/demo.py",
+            "console": "integratedTerminal",
+            "python": "/opt/anaconda3/bin/python",
+            "args": [
+                "image",
+                "-n",
+                "yolox-s",
+                "-c",
+                "/workspace/checkpoints/yolox/yolox_s.pth",
+                "--path",
+                "assets/dog.jpg",
+                "--conf",
+                "0.25",
+                "--nms",
+                "0.45",
+                "--tsize",
+                "640",
+                "--save_result",
+                "--device",
+                "gpu"
+            ]
+        }
+    ]
+}
