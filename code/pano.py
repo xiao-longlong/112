@@ -9,7 +9,7 @@ class Stitch:
 		self.path = args
 		fp = open(self.path, 'r')
 		filenames = [each.rstrip('\r\n') for each in  fp.readlines()]
-		print filenames
+		print(filenames)
 		self.images = [cv2.resize(cv2.imread(each),(480, 320)) for each in filenames]
 		self.count = len(self.images)
 		self.left_list, self.right_list, self.center_im = [], [],None
@@ -17,28 +17,28 @@ class Stitch:
 		self.prepare_lists()
 
 	def prepare_lists(self):
-		print "Number of images : %d"%self.count
+		print("Number of images : %d"%self.count)
 		self.centerIdx = self.count/2 
-		print "Center index image : %d"%self.centerIdx
+		print("Center index image : %d"%self.centerIdx)
 		self.center_im = self.images[int(self.centerIdx)]
 		for i in range(self.count):
 			if(i<=self.centerIdx):
 				self.left_list.append(self.images[i])
 			else:
 				self.right_list.append(self.images[i])
-		print "Image lists prepared"
+		print("Image lists prepared")
 
 	def leftshift(self):
 		# self.left_list = reversed(self.left_list)
 		a = self.left_list[0]
 		for b in self.left_list[1:]:
 			H = self.matcher_obj.match(a, b, 'left')
-			print "Homography is : ", H
+			print("Homography is : ", H)
 			xh = np.linalg.inv(H)
-			print "Inverse Homography :", xh
-			ds = np.dot(xh, np.array([a.shape[1], a.shape[0], 1]));
+			print("Inverse Homography :", xh)
+			ds = np.dot(xh, np.array([a.shape[1], a.shape[0], 1]))
 			ds = ds/ds[-1]
-			print "final ds=>", ds
+			print("final ds=>", ds)
 			f1 = np.dot(xh, np.array([0,0,1]))
 			f1 = f1/f1[-1]
 			xh[0][-1] += abs(f1[0])
@@ -47,30 +47,79 @@ class Stitch:
 			offsety = abs(int(f1[1]))
 			offsetx = abs(int(f1[0]))
 			dsize = (int(ds[0])+offsetx, int(ds[1]) + offsety)
-			print "image dsize =>", dsize
+			print("image dsize =>", dsize)
 			tmp = cv2.warpPerspective(a, xh, dsize)
-			# cv2.imshow("warped", tmp)
-			# cv2.waitKey()
+			cv2.imshow("warped", tmp)
+			cv2.waitKey()
 			tmp[offsety:b.shape[0]+offsety, offsetx:b.shape[1]+offsetx] = b
 			a = tmp
 
 		self.leftImage = tmp
 
+	def rightshiftwxl(self):
+		a = self.right_list[-1]
+		for b in reversed(self.right_list[:-1]):
+			H = self.matcher_obj.match(a, b, 'right')
+			print("Homography is : ", H)
+			xh = np.linalg.inv(H)
+			print("Inverse Homography :", xh)
+			ds = np.dot(xh, np.array([a.shape[1], a.shape[0], 1]))
+			ds = ds/ds[-1]
+			print("final ds=>", ds)
+
+	def rightshifttest(self):
+		a = self.right_list[-1]
+		for b in reversed(self.right_list[:-1]):
+			H = self.matcher_obj.match(a, b, 'left')
+			print("Homography is : ", H)
+			xh = np.linalg.inv(H)
+			print("Inverse Homography :", xh)
+			ds = np.dot(xh, np.array([a.shape[1], a.shape[0], 1]))
+			ds = ds/ds[-1]
+			print("final ds=>", ds)
+			f1 = np.dot(xh, np.array([0,0,1]))
+			f1 = f1/f1[-1]
+			xh[0][-1] += abs(f1[0])
+			xh[1][-1] += abs(f1[1])
+			ds = np.dot(xh, np.array([a.shape[1], a.shape[0], 1]))
+			offsety = abs(int(f1[1]))
+			offsetx = abs(int(f1[0]))
+			dsize = (int(ds[0])+offsetx, int(ds[1]) + offsety)
+			print("image dsize =>", dsize)
+
+			# 对图像 a 进行仿射变换
+			tmp = cv2.warpPerspective(a, xh, dsize)
+			cv2.imwrite("tmp.jpg", tmp)
+			
+			# 将图像 b 放到变换后的 tmp 的右侧
+			tmp[tmp.shape[0]-offsety-b.shape[0]:tmp.shape[0]-offsety, tmp.shape[1]-offsetx-b.shape[1]:tmp.shape[1]-offsetx] = b
+			
+			# 更新 a 为拼接后的图像
+			a = tmp
+
+		self.rightImage = tmp
+        
+
+
 		
 	def rightshift(self):
 		for each in self.right_list:
 			H = self.matcher_obj.match(self.leftImage, each, 'right')
-			print "Homography :", H
+			print("Homography :", H)
 			txyz = np.dot(H, np.array([each.shape[1], each.shape[0], 1]))
 			txyz = txyz/txyz[-1]
 			dsize = (int(txyz[0])+self.leftImage.shape[1], int(txyz[1])+self.leftImage.shape[0])
 			tmp = cv2.warpPerspective(each, H, dsize)
-			cv2.imshow("tp", tmp)
-			cv2.waitKey()
-			# tmp[:self.leftImage.shape[0], :self.leftImage.shape[1]]=self.leftImage
-			tmp = self.mix_and_match(self.leftImage, tmp)
-			print "tmp shape",tmp.shape
-			print "self.leftimage shape=", self.leftImage.shape
+			# cv2.imshow("tp", tmp)
+			# cv2.waitKey()
+			if(tmp.shape[0] < self.leftImage.shape[0]):
+				tmp1 = np.zeros((self.leftImage.shape[0], tmp.shape[1], 3), dtype=np.uint8)
+				tmp1[:tmp.shape[0],:]=tmp
+				tmp = tmp1
+			tmp[:self.leftImage.shape[0], :self.leftImage.shape[1]]=self.leftImage
+			# tmp = self.mix_and_match(self.leftImage, tmp)
+			print("tmp shape",tmp.shape)
+			print("self.leftimage shape=", self.leftImage.shape)
 			self.leftImage = tmp
 		# self.showImage('left')
 
@@ -79,13 +128,13 @@ class Stitch:
 	def mix_and_match(self, leftImage, warpedImage):
 		i1y, i1x = leftImage.shape[:2]
 		i2y, i2x = warpedImage.shape[:2]
-		print leftImage[-1,-1]
+		print(leftImage[-1,-1])
 
 		t = time.time()
 		black_l = np.where(leftImage == np.array([0,0,0]))
 		black_wi = np.where(warpedImage == np.array([0,0,0]))
-		print time.time() - t
-		print black_l[-1]
+		print(time.time() - t)
+		print(black_l[-1])
 
 		for i in range(0, i1x):
 			for j in range(0, i1y):
@@ -129,18 +178,19 @@ class Stitch:
 
 
 if __name__ == '__main__':
+	start_time = time.time()
 	try:
 		args = sys.argv[1]
 	except:
-		args = "txtlists/files1.txt"
+		args = "/home/wxl/wxlcode/Python-Multiple-Image-Stitching/code/file1.txt"
 	finally:
-		print "Parameters : ", args
+		print("Parameters : ", args)
 	s = Stitch(args)
-	s.leftshift()
+	# s.leftshift()
 	# s.showImage('left')
-	s.rightshift()
-	print "done"
-	cv2.imwrite("test12.jpg", s.leftImage)
-	print "image written"
+	s.rightshifttest()
+	print("done")
+	cv2.imwrite("test_time1.jpg", s.rightImage)
+	print("image written")
 	cv2.destroyAllWindows()
-	
+	print(time.time() - start_time)

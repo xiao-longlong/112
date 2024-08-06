@@ -3,7 +3,8 @@ import numpy as np
 
 class matchers:
 	def __init__(self):
-		self.surf = cv2.xfeatures2d.SURF_create()
+		# self.surf = cv2.xfeatures2d.SURF_create()
+		self.surf = cv2.SIFT_create()
 		FLANN_INDEX_KDTREE = 0
 		index_params = dict(algorithm=0, trees=5)
 		search_params = dict(checks=50)
@@ -12,7 +13,8 @@ class matchers:
 	def match(self, i1, i2, direction=None):
 		imageSet1 = self.getSURFFeatures(i1)
 		imageSet2 = self.getSURFFeatures(i2)
-		print "Direction : ", direction
+		print("Direction : ", direction)
+		# 每一个imageSet2，在imageSet1中找最接近的点
 		matches = self.flann.knnMatch(
 			imageSet2['des'],
 			imageSet1['des'],
@@ -21,6 +23,7 @@ class matchers:
 		good = []
 		for i , (m, n) in enumerate(matches):
 			if m.distance < 0.7*n.distance:
+				# m.trainIdx是imageSet1的索引，m.queryIdx是imageSet2的索引
 				good.append((m.trainIdx, m.queryIdx))
 
 		if len(good) > 4:
