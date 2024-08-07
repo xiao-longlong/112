@@ -13,6 +13,7 @@ import torch.backends.cudnn as cudnn
 import os
 if __name__=='__main__':
     import sys
+    print(sys.path)
     sys.path.append(os.getcwd())
 
 from yolox.core import launch
