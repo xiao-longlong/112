@@ -60,7 +60,8 @@ class COCODataset(CacheDataset):
         # if data_dir is None:
         #     data_dir = os.path.join(get_yolox_datadir(), "COCO")
 # 改了
-        data_dir = "/workspace/dataset/coco/" #改了
+        # data_dir = "/workspace/dataset/coco/" #改了
+        # data_dir = "/workspace/dataset/" #改了        
         self.data_dir = data_dir
         self.json_file = json_file
 

@@ -21,6 +21,13 @@ from yolox.exp import Exp, check_exp_value, get_exp
 from yolox.utils import configure_module, configure_nccl, configure_omp, get_num_devices
 
 
+# def test_parser():
+#     parser = argparse.ArgumentParser("YOLOX test parser")
+#     parser.add_argument(
+#         "-n", "--name", type=int, default=5, help="model name"
+#     )
+#     return parser
+
 def make_parser():
     parser = argparse.ArgumentParser("YOLOX train parser")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
@@ -36,7 +43,7 @@ def make_parser():
         type=str,
         help="url used to set up distributed training",
     )
-    parser.add_argument("-b", "--batch-size", type=int, default=64, help="batch size")
+
     parser.add_argument(
         "-d", "--devices", default=None, type=int, help="device for training"
     )
@@ -48,6 +55,7 @@ def make_parser():
         type=str,
         help="plz input your experiment description file",
     )
+    parser.add_argument("-b", "--batch-size", type=int, default=16, help="batch size")
     parser.add_argument(
         "--resume", default=False, action="store_true", help="resume training"
     )
@@ -95,6 +103,7 @@ def make_parser():
                 Implemented loggers include `tensorboard`, `mlflow` and `wandb`.",
         default="tensorboard"
     )
+
     parser.add_argument(
         "opts",
         help="Modify config options using the command-line",
@@ -126,8 +135,12 @@ def main(exp: Exp, args):
 
 
 if __name__ == "__main__":
+    # aaa = test_parser().parse_args()
+    # print(aaa.name)
     configure_module()
     args = make_parser().parse_args()
+    # make_parser().parse_args().batch_size
+    # print(args.batch_size)
     exp = get_exp(args.exp_file, args.name)
     exp.merge(args.opts)
     check_exp_value(exp)

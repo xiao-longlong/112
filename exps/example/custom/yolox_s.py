@@ -15,15 +15,19 @@ class Exp(MyExp):
 
         """改了"""
         # Define yourself dataset path
+        # self.data_dir = "/workspace/dataset/coco/aaa/"
         self.data_dir = "/workspace/dataset/coco/"
         self.train_ann = "instances_train2017.json"
         self.val_ann = "instances_val2017.json"
         # self.data_dir = "datasets/coco128"
         # self.train_ann = "instances_train2017.json"
         # self.val_ann = "instances_val2017.json"
+        self.eval_interval = 1000
         """改了"""
 
-        self.num_classes = 71
+        self.num_classes =71
+        
+        
 
         self.max_epoch = 300
         self.data_num_workers = 4
