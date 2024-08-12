@@ -9,7 +9,7 @@ os.chdir(_BASEDIR)
 
 
 def test():
-    img_path = "/workspace/tr1/imgs/屏幕截图 2024-08-08 175654.png"
+    img_path = "/workspace/wenbenjiance/屏幕截图 2024-08-08 175654.png"
     # img_path = "imgs/name_card.jpg"
 
     img_pil = Image.open(img_path)
