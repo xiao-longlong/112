@@ -1,0 +1,53 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "启动脚本",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/wxl/wxlcode/112/intergration/launch.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--model",
+                "3"
+            ]
+        },
+        {
+            "name": "Python: 当前文件",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "图像拼接",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/wxl/wxlcode/112/wxl/code/pano.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "手势识别",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/wxl/wxlcode/112/cqx/main_cam_wxl.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "检测模块",
+            "type": "python",
+            "request": "launch",
+            "program": "/workspace/tym/tools/train.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": []
+        },
+    ]
+}
